@@ -1,0 +1,107 @@
+attach()、detach()和with()
+
+attach(mtcars)
+summary(mpg)
+plot(mpg,disp)
+plot(mpg,wt)
+detach(mtcars)
+实例标识 符(case identifier)可通过数据框操作函数中的rowname选项指定。
+
+patientdata <- data.frame(patientID,age,diabetes,status,row.names = patientID)
+因子类型
+
+变量可分为三种类型：名义型（类别）、有序型（病情：poor, improved, excellent)、连续型（年龄Age）。 类别(名义型)变量和有序类别(有序型)变量在R中称为因子(factor)。
+
+对于字符型向量，因子的水平默认依字母顺序创建。但可指定。
+
+diabetes <- c('type1','type2','type3')
+diabetes <- facor(diabetes)
+#此向量存储为(1, 2, 1, 1)，并在内部将其关联为 1=Type1和2=Type2(具体赋值根据字母顺序而定)。
+
+status <- c('poor','improved','excellent','poor')
+status <- factor(status, ordered=TRUE)
+#会将向量编码为(3, 2, 1, 3)，并在内部将这 些值关联为1=Excellent、2=Improved以及3=Poor。
+
+你可以通过指定levels选项来覆盖默认排序。例如:
+status <- facor(status,order= TRUE,levels=c('poor','improved','excelent'))
+#各水平的赋值将为1=Poor、2=Improved、3=Excellent。
+列表
+
+mylist <- list(name1=object1,name2=object2)
+#对像可以是各种类型，包括若干向量、矩阵、数据框
+键盘输入数据
+
+mydata <- data.frame(age=numeric(0),gender=character(0),weight=numeric(0))
+mydata <- edit(mydata)
+数据文件导入 read.table()带分隔符的文本文件中导入数据。分隔符可为一个或多个 空格、制表符、换行符或回车符。
+
+grades <- read.table('studentgrades.csv',header = TRUE,sep = ',',row.names='STUDENTID')
+其他导入函数
+
+R也提供了若干种 通过连接(connection)来访问数据的机制。例如，函数file()、gzfile()、bzfile()、 xzfile()、unz()和url()可作为文件名参数使用。函数file()允许用户访问文件、剪 贴板和C级别的标准输入。函数gzfile()、bzfile()、xzfile()和unz()允许用户读 取压缩文件。函数url()能够让你通过一个含有http://、ftp://或file://的完整URL 访问网络上的文件，还可以为HTTP和FTP连接指定代理。为了方便，(用""围住的)完 整的URL也经常直接用来代替文件名使用。更多详情，参见help(file)。
+
+导入Excel数据
+
+#使用RODBC包来访问Excel文件
+
+library(RODBC)
+channel <- odbcConnectExcel('myfile.xls')
+mydataframe <- sqlFetch(channel,'mysheet')
+odbcClose(channel)
+#使用read.xlsx()导入
+
+library(xlsx)
+mydataframe <- read.xlsx(file,n) #n是导入的工作表序号。
+
+导入XML数据
+
+从网页抓取数据
+
+完成这个任务的一种途径是使用函数readLines() 下载网页，然后使用如grep()和gsub()一类的函数处理它。对于结构复杂的网页，可以使用 RCurl包和XML包来提取其中想要的信息。
+
+导入SPSS数据
+
+library(Hmisc) mydataframe <- spss.get('mydata.sav',use.value.labels = TRUE)
+
+导入SAS数据
+
+导入Stata数据
+
+访问数据库管理系统
+
+通过Stat/Transfer导入数据
+
+数据集的标注： 变量标签 值标签
+
+处理数据对象的实用函数： length dim str class names cbind rbind object head tail ls rm fix
+
+绘制图形
+pdf('mygraph.pdf')  #将图形保存到当前工作 目录中名为mygraph.pdf的PDF文件中
+
+attach(mtcars)
+plot(wt,mpg)
+abline(lm(mpg~wt))
+title('标题')
+detach(mtcars)
+
+dev.off()
+#其他函数win.metafile()、png()、jpeg()、bmp()、tiff()、xfig() 和postscript()
+plot()、hist()(绘制直方图)或boxplot()
+
+#绘制彩虹饼图、灰饼图
+n <- 10
+mycolors <- rainbow(n)
+mycolors
+pie(rep(1,n),labels = mycolors,col=mycolors)
+mygrays <- gray(0:n/n)
+pie(rep(1,n),labels = mygrays,col=mygrays)
+
+#色值的表示方法：如白色，col=1、col="white"、col="#FFFFFF"、col=rgb(1,1,1)和col=hsv(0,0,1) 
+
+#多图形输出：三行一列排序
+opar <- par(no.readonly = TRUE)
+par(mfrow =c(3,1))
+plot(图1)
+plot(图2)
+plot(图3)
+par(opar)
